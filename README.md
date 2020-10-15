@@ -4,4 +4,4 @@ fetch hot posts from [r/KidsAreFuckingStupid](https://reddit.com/r/KidsAreFuckin
 ### Process
 every 2 minutes fetch the latest hot post from the subreddit, check a .txt file to see if it's already been posted, if it's not it will send it to telegram and update the .txt file with the latest hot post url. 
 
-during this it also uses the [bit.ly api](https://dev.bit.ly) to short the reddit link to post on telegram with the post
+during this it also uses the [bit.ly api](https://dev.bitly.com) to short the reddit link to post it on telegram with the post

@@ -16,6 +16,7 @@ def bitly(url):
     return res["link"]
 
 bot = telepot.Bot(os.environ["token"])
+chatid = int(os.environ["id"])
 print("ready")
 
 while True:
@@ -51,9 +52,9 @@ while True:
         caption = f"• *{title}*\n\n• by *{author}*\n\n• *{ups}* upvotes\n\n• {link}"
 
         if url.endswith(("png", "jpg", "jpeg")):
-            bot.sendPhoto(-1001410145919, url, caption = caption, parse_mode = "Markdown")
+            bot.sendPhoto(chatid, url, caption = caption, parse_mode = "Markdown")
         
         elif ".mp4" in url or ".gif" in url:
-            bot.sendVideo(-1001410145919, url, caption = caption, parse_mode = "Markdown")
+            bot.sendVideo(chatid, url, caption = caption, parse_mode = "Markdown")
 
     time.sleep(120) 
