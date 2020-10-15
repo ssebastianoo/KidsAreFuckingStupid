@@ -1,6 +1,8 @@
-import telepot, requests, json, time
+import telepot, requests, json, time, os, dotenv
 
-bot = telepot.Bot("1123360447:AAHCkIcgJnPg7eb5WOxOk3uSvdPuLaXm2w8")
+dotenv.load_dotenv(dotenv_path = ".env")
+
+bot = telepot.Bot(os.environ["token"])
 print("ready")
 
 while True:
