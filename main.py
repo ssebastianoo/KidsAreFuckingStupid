@@ -59,6 +59,6 @@ while True:
                 bot.sendVideo(chatid, url, caption = caption, parse_mode = "Markdown")
 
     except Exception as e:
-        bot.sendMessage(-1001410145919, e)
+        bot.sendMessage(int(os.environ["logs_id"]), e)
 
     time.sleep(120) 
