@@ -1,4 +1,4 @@
-import telepot, requests, json, time, os, dotenv
+import telepot, requests, json, time, os, dotenv, traceback
 
 dotenv.load_dotenv(dotenv_path = ".env")
 
@@ -20,41 +20,45 @@ chatid = int(os.environ["id"])
 print("ready")
 
 while True:
-    url = "https://www.reddit.com/r/KidsAreFuckingStupid/hot.json"
-    res = requests.get(url, headers = {'User-agent': 'sebamemes by u/sebastianogirotto'})
-    res = res.json()
-    url = res["data"]["children"][0]["data"]["url_overridden_by_dest"]
-    author = "u/" + res["data"]["children"][0]["data"]["author"]
-    subreddit = "r/" + res["data"]["children"][0]["data"]["subreddit"]
-    ups = res["data"]["children"][0]["data"]["ups"]
-    title = res["data"]["children"][0]["data"]["title"]
-    link = "https://reddit.com" + res["data"]["children"][0]["data"]["permalink"]
-    link = bitly(link)
+    try:
+        url = "https://www.reddit.com/r/KidsAreFuckingStupid/hot.json"
+        res = requests.get(url, headers = {'User-agent': 'sebamemes by u/sebastianogirotto'})
+        res = res.json()
+        url = res["data"]["children"][0]["data"]["url_overridden_by_dest"]
+        author = "u/" + res["data"]["children"][0]["data"]["author"]
+        subreddit = "r/" + res["data"]["children"][0]["data"]["subreddit"]
+        ups = res["data"]["children"][0]["data"]["ups"]
+        title = res["data"]["children"][0]["data"]["title"]
+        link = "https://reddit.com" + res["data"]["children"][0]["data"]["permalink"]
+        link = bitly(link)
 
-    if "v.redd.it" in url:
-        url = res["data"]["children"][0]["data"]["media"]["reddit_video"]["fallback_url"]
+        if "v.redd.it" in url:
+            url = res["data"]["children"][0]["data"]["media"]["reddit_video"]["fallback_url"]
 
-    f = open("url.txt", "r")
-    f_ = f.read()
+        f = open("url.txt", "r")
+        f_ = f.read()
 
-    print(url)
+        print(url)
 
-    if str(f_) == url:
-        f.close()
-        print("same url, passed")
-        pass
+        if str(f_) == url:
+            f.close()
+            print("same url, passed")
+            pass
 
-    else:
-        f = open("url.txt", "w")
-        f.write(url)
-        f.close()
+        else:
+            f = open("url.txt", "w")
+            f.write(url)
+            f.close()
 
-        caption = f"• *{title}*\n\n• by *{author}*\n\n• *{ups}* upvotes\n\n• {link}"
+            caption = f"• *{title}*\n\n• by *{author}*\n\n• *{ups}* upvotes\n\n• {link}"
 
-        if url.endswith(("png", "jpg", "jpeg")):
-            bot.sendPhoto(chatid, url, caption = caption, parse_mode = "Markdown")
-        
-        elif ".mp4" in url or ".gif" in url:
-            bot.sendVideo(chatid, url, caption = caption, parse_mode = "Markdown")
+            if url.endswith(("png", "jpg", "jpeg")):
+                bot.sendPhoto(chatid, url, caption = caption, parse_mode = "Markdown")
+            
+            elif ".mp4" in url or ".gif" in url:
+                bot.sendVideo(chatid, url, caption = caption, parse_mode = "Markdown")
+
+    except Exception as e:
+        bot.sendMessage(-1001410145919, e)
 
     time.sleep(120) 
