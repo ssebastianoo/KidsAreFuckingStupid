@@ -24,39 +24,60 @@ while True:
         url = "https://www.reddit.com/r/KidsAreFuckingStupid/hot.json"
         res = requests.get(url, headers = {'User-agent': 'sebamemes by u/sebastianogirotto'})
         res = res.json()
-        url = res["data"]["children"][0]["data"]["url_overridden_by_dest"]
-        author = "u/" + res["data"]["children"][0]["data"]["author"]
-        subreddit = "r/" + res["data"]["children"][0]["data"]["subreddit"]
-        ups = res["data"]["children"][0]["data"]["ups"]
-        title = res["data"]["children"][0]["data"]["title"]
-        link = "https://reddit.com" + res["data"]["children"][0]["data"]["permalink"]
-        link = bitly(link)
 
-        if "v.redd.it" in url:
-            url = res["data"]["children"][0]["data"]["media"]["reddit_video"]["fallback_url"]
+        for post in range(10):
+            url = res["data"]["children"][post]["data"]["url_overridden_by_dest"]
+            author = "u/" + res["data"]["children"][post]["data"]["author"]
+            subreddit = "r/" + res["data"]["children"][post]["data"]["subreddit"]
+            ups = res["data"]["children"][post]["data"]["ups"]
+            title = res["data"]["children"][post]["data"]["title"]
+            link = "https://reddit.com" + res["data"]["children"][post]["data"]["permalink"]
+            link = bitly(link)
 
-        f = open("url.txt", "r")
-        f_ = f.read()
+            if "v.redd.it" in url:
+                url = res["data"]["children"][post]["data"]["media"]["reddit_video"]["fallback_url"]
 
-        print(url)
+            f = open("url.txt", "r")
+            f_ = f.read()
 
-        if str(f_) == url:
-            f.close()
-            print("same url, passed")
-            pass
+            posted = f_.split("\n")
 
-        else:
-            f = open("url.txt", "w")
-            f.write(url)
-            f.close()
+            print(url)
 
-            caption = f"• *{title}*\n\n• by *{author}*\n\n• *{ups}* upvotes\n\n• {link}"
+            if url in posted:
+                f.close()
+                print("already posted")
+                pass
 
-            if url.endswith(("png", "jpg", "jpeg")):
-                bot.sendPhoto(chatid, url, caption = caption, parse_mode = "Markdown")
-            
-            elif ".mp4" in url or ".gif" in url:
-                bot.sendVideo(chatid, url, caption = caption, parse_mode = "Markdown")
+            else:
+                if len(posted) >= 50:
+                    posted.pop(0)
+
+                posted.append(url)
+
+                # remove all the blank fields
+
+                passed = False 
+
+                while not passed:
+                    if " " in posted:
+                        posted.remove(" ")
+                        passed = False
+
+                    else:
+                        passed = True
+
+                f = open("url.txt", "w")
+                f.write("\n".join(posted))
+                f.close()
+
+                caption = f"• *{title}*\n\n• by *{author}*\n\n• *{ups}* upvotes\n\n• {link}"
+
+                if url.endswith(("png", "jpg", "jpeg")):
+                    bot.sendPhoto(chatid, url, caption = caption, parse_mode = "Markdown")
+                
+                elif ".mp4" in url or ".gif" in url:
+                    bot.sendVideo(chatid, url, caption = caption, parse_mode = "Markdown")
 
     except Exception as e:
         bot.sendMessage(int(os.environ["logs_id"]), e)
