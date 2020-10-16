@@ -17,6 +17,19 @@ def bitly(url):
 
 bot = telepot.Bot(os.environ["token"])
 chatid = int(os.environ["id"])
+
+def on_chat_message(msg):
+    content_type, chat_type, chat_id = telepot.glance(msg)
+
+    print(msg)
+
+    text = msg["text"]
+
+    if text.startswith("/start"):
+        bot.sendMessage(chat_id, "*Hello, I'm the bot that manages @KidsAreFuckingStupid*\n\nI fetch the last 10 hot posts from [r/KidsAreFuckingStupid](https://reddit.com/r/KidsAreFuckingStupid) and post them on telegram!", parse_mode = "Markdown", disable_web_page_preview = True)
+
+bot.message_loop(on_chat_message)
+
 print("ready")
 
 while True:
@@ -82,4 +95,4 @@ while True:
     except Exception as e:
         bot.sendMessage(int(os.environ["logs_id"]), str(e))
 
-    time.sleep(120) 
+    time.sleep(120)
