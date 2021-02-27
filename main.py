@@ -1,10 +1,10 @@
-import telepot, requests, json, time, os, dotenv, traceback
-
-dotenv.load_dotenv(dotenv_path = ".env")
+import requests, json, time, config, traceback, telegram
+from telegram import Update
+from telegram.ext import Updater
 
 def bitly(url):
     headers = {
-    'Authorization': f'Bearer {os.environ["bitly"]}',
+    'Authorization': f'Bearer {config.bitly}',
     'Content-Type': 'application/json',
     }
 
@@ -15,27 +15,17 @@ def bitly(url):
 
     return res["link"]
 
-bot = telepot.Bot(os.environ["token"])
-chatid = int(os.environ["id"])
-
-def on_chat_message(msg):
-    content_type, chat_type, chat_id = telepot.glance(msg)
-
-    print(msg)
-
-    text = msg["text"]
-
-    if text.startswith("/start"):
-        bot.sendMessage(chat_id, "*Hello, I'm the bot that manages @KidsAreFuckingStupid*\n\nI fetch the last 10 hot posts from [r/KidsAreFuckingStupid](https://reddit.com/r/KidsAreFuckingStupid) and post them on telegram!", parse_mode = "Markdown", disable_web_page_preview = True)
-
-bot.message_loop(on_chat_message)
+bot = telegram.Bot(config.token)
+session = requests.Session()
+session.headers["User-agent"] = "sebamemes by u/sebastianogirotto"
+chatid = int(config.id)
 
 print("ready")
 
 while True:
     try:
         url = "https://www.reddit.com/r/KidsAreFuckingStupid/hot.json"
-        res = requests.get(url, headers = {'User-agent': 'sebamemes by u/sebastianogirotto'})
+        res = session.get(url)
         res = res.json()
 
         for post in range(10):
@@ -70,7 +60,7 @@ while True:
 
                 # remove all the blank fields
 
-                passed = False 
+                passed = False
 
                 while not passed:
                     if " " in posted:
@@ -87,12 +77,12 @@ while True:
                 caption = f"• *{title}*\n\n• by *{author}*\n\n• *{ups}* upvotes\n\n• {link}"
 
                 if url.endswith(("png", "jpg", "jpeg")):
-                    bot.sendPhoto(chatid, url, caption = caption, parse_mode = "Markdown")
-                
+                    bot.send_photo(chatid, url, caption = caption, parse_mode = "Markdown")
+
                 elif ".mp4" in url or ".gif" in url:
-                    bot.sendVideo(chatid, url, caption = caption, parse_mode = "Markdown")
+                    bot.send_video(chatid, url, caption = caption, parse_mode = "Markdown")
 
     except Exception as e:
-        bot.sendMessage(int(os.environ["logs_id"]), str(e))
+        bot.send_message(config.logs_id, str(e))
 
     time.sleep(120)
