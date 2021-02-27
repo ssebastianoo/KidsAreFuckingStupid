@@ -1,3 +1,4 @@
 .env
 config.py
 url.txt
+__pycache__/
