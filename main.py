@@ -35,7 +35,6 @@ while True:
             ups = res["data"]["children"][post]["data"]["ups"]
             title = res["data"]["children"][post]["data"]["title"]
             link = "https://reddit.com" + res["data"]["children"][post]["data"]["permalink"]
-            link = bitly(link)
 
             if "v.redd.it" in url:
                 url = res["data"]["children"][post]["data"]["media"]["reddit_video"]["fallback_url"]
@@ -74,7 +73,7 @@ while True:
                 f.write("\n".join(posted))
                 f.close()
 
-                caption = f"• *{title}*\n\n• by *{author}*\n\n• *{ups}* upvotes\n\n• {link}"
+                caption = f"• [title]({link})\n\n• by *{author}*"
 
                 if url.endswith(("png", "jpg", "jpeg")):
                     bot.send_photo(chatid, url, caption = caption, parse_mode = "Markdown")
