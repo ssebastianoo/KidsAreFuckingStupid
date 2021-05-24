@@ -73,7 +73,7 @@ while True:
                 f.write("\n".join(posted))
                 f.close()
 
-                caption = f"• [title]({link})\n\n• by *{author}*"
+                caption = f"• [{title}]({link})\n\n• by *{author}*"
 
                 if url.endswith(("png", "jpg", "jpeg")):
                     bot.send_photo(chatid, url, caption = caption, parse_mode = "Markdown")
